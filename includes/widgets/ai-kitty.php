@@ -281,8 +281,6 @@ class Widget_AI_Kitty extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		var_dump($settings);
-
 		if ( '' === $settings['prompt'] ) {
 			return;
 		}
@@ -295,11 +293,70 @@ class Widget_AI_Kitty extends Widget_Base {
 		$this->add_inline_editing_attributes( 'prompt' );
 
 		$prompt = $settings['prompt'];
+		$inputWidgetId = $settings['ai-kitty-input'];
+		$outputWidgetId = $settings['ai-kitty-output'];
 
-		$title_html = sprintf( '<%1$s %2$s>%3$s</%1$s>', 'h2', $this->get_render_attribute_string( 'prompt' ), $prompt );
+		echo '<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputWidget = document.querySelector("[data-id=\'' . $inputWidgetId . '\']").querySelector("input[type=\'text\']");
+        console.log("Input widget:", inputWidget);
+        if (!inputWidget) {
+            console.warn("Input widget with data-id=\'' . $inputWidgetId . '\' not found.");
+            return;
+        }
 
-		// PHPCS - the variable $title_html holds safe data.
-		echo $title_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        // OpenAI API settings
+        const apiKey = "your-openai-api-key"; // Replace with your actual API key
+        const apiUrl = "https://api.openai.com/v1/completions";
+        const prompt = ' . json_encode($prompt) . ';
+
+		const callOpenAI = (inputValue) => {
+			// Call the OpenAI API
+			fetch(apiUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Bearer ${apiKey}`
+				},
+				body: JSON.stringify({
+					model: "gpt-4",
+					prompt: prompt,
+					max_tokens: 100
+				})
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`API error: ${response.statusText}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				const generatedText = data.choices[0].text.trim();
+				console.log("Generated response from OpenAI:", generatedText);
+				// Optionally, display the response in another widget
+				const outputWidget = document.querySelector("[data-id=\'' . $outputWidgetId . '\'] h, p, span");
+				console.log("Output widget:", outputWidget);
+				if (outputWidget) {
+					outputWidget.value = generatedText;
+				}
+			})
+			.catch(error => {
+				console.error("Error calling OpenAI API:", error);
+			});
+		};
+		let debounceTimeout;
+        inputWidget.addEventListener("input", function(event) {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                const inputValue = event.target.value.trim();
+                if (inputValue) {
+					console.log("Input value:", inputValue);
+                    callOpenAI(inputValue);
+                }
+            }, 500); // Adjust debounce delay as needed
+        });
+    });
+</script>';
 	}
 
 	/**
@@ -331,6 +388,7 @@ class Widget_AI_Kitty extends Widget_Base {
 			elementNodeListOf
 				.forEach( ( elInput ) => {
 					const clickHandler = ( event ) => {
+
 						container = window.top.elementor.getPanelView().getCurrentPageView().getOption( 'editedElementView' ).container
 						console.log( `AI-KITTY!!!!!! You clicked on:`,event.target );
 						event.target.removeEventListener( 'click', clickHandler, true );
@@ -355,9 +413,8 @@ class Widget_AI_Kitty extends Widget_Base {
 									window.top.$e.run( 'document/elements/settings', {
 										container: container,
 										settings: {
-											// 'ai-kitty-input': inputWidget,
-											// 'ai-kitty-output': outputWidget,
-											'input': 'bla',
+											'ai-kitty-input': inputWidget,
+											'ai-kitty-output': outputWidget,
 										},
 									} );
 
@@ -372,7 +429,7 @@ class Widget_AI_Kitty extends Widget_Base {
 							} );
 						event.stopPropagation();
 					};
-					elInput.addEventListener( 'click', clickHandler );
+					elInput.addEventListener( 'click', clickHandler, true );
 				} );
 		</script>
 
