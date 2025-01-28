@@ -34,6 +34,7 @@ const eventsConfig = {
 		elementorLogoDropdown: 'top_bar_elementor_logo_dropdown',
 		elementorLogo: 'Elementor Logo',
 		notes: 'Notes',
+		'ai-kitty': 'AI-Kitty',
 		siteSettings: 'Site Settings',
 		structure: 'Structure',
 		documentNameDropdown: 'Document Name dropdown',

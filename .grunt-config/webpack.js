@@ -117,6 +117,7 @@ const entry = {
 	'container-converter': path.resolve( __dirname, '../modules/container-converter/assets/js/editor/module.js' ),
 	'atomic-widgets-editor': path.resolve( __dirname, '../modules/atomic-widgets/assets/js/editor/module.js' ),
 	'notes': path.resolve( __dirname, '../modules/notes/assets/js/notes.js' ),
+	'ai-kitty': path.resolve( __dirname, '../modules/ai-kitty/assets/js/ai-kitty.js' ),
 	'web-cli': path.resolve( __dirname, '../modules/web-cli/assets/js/index.js' ),
 	'import-export-admin': path.resolve( __dirname, '../app/modules/import-export/assets/js/admin.js' ),
 	'kit-elements-defaults-editor': path.resolve( __dirname, '../modules/kit-elements-defaults/assets/js/editor/index.js' ),
