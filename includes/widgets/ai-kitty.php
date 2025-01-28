@@ -281,7 +281,7 @@ class Widget_AI_Kitty extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-//		var_dump($settings);
+		var_dump($settings);
 
 		if ( '' === $settings['prompt'] ) {
 			return;
@@ -326,7 +326,7 @@ class Widget_AI_Kitty extends Widget_Base {
 
 			console.log( 'AI-KITTY!!!!!!' );
 			let container = null;
-			const elementNodeListOf = document.querySelectorAll( '.elementor-heading-title, .elementor-text-editor' );
+			const elementNodeListOf = document.querySelectorAll( '.elementor-widget-heading, .elementor-widget-text-editor' );
 			console.log( 'Element Node List Of:', elementNodeListOf );
 			elementNodeListOf
 				.forEach( ( elInput ) => {
@@ -334,13 +334,15 @@ class Widget_AI_Kitty extends Widget_Base {
 						container = window.top.elementor.getPanelView().getCurrentPageView().getOption( 'editedElementView' ).container
 						console.log( `AI-KITTY!!!!!! You clicked on:`,event.target );
 						event.target.removeEventListener( 'click', clickHandler, true );
+						const outputWidget = elInput.getAttribute( 'data-id' );
 
-						document.querySelectorAll( '.elementor-field-textual' )
+						document.querySelectorAll( '.elementor-widget-form' )
 							.forEach( ( elOutput ) => {
 								console.log( `AI-KITTY!!!!!! bla`);
 								const clickHandlerOut = ( eventOut ) => {
 									console.log( `AI-KITTY!!!!!! You clicked on`,eventOut.target );
 									eventOut.target.removeEventListener( 'click', clickHandlerOut );
+									const inputWidget = elOutput.getAttribute( 'data-id' );
 
 									// Event listener with debounce
 									eventOut.target.addEventListener(
@@ -353,10 +355,12 @@ class Widget_AI_Kitty extends Widget_Base {
 									window.top.$e.run( 'document/elements/settings', {
 										container: container,
 										settings: {
-											['input']: eventOut.target,
-											[ 'target' ]: event.target,
+											// 'ai-kitty-input': inputWidget,
+											// 'ai-kitty-output': outputWidget,
+											'input': 'bla',
 										},
 									} );
+
 									event.stopPropagation();
 
 									// const instructions = prompt( 'Insert Prompt' );
@@ -374,7 +378,7 @@ class Widget_AI_Kitty extends Widget_Base {
 
 
 		<#
-		print( <h1>bla</h1> );
+		print( '<h1></h1>' );
 		#>
 		<?php
 	}
