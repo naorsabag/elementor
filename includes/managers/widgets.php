@@ -70,6 +70,7 @@ class Widgets_Manager {
 			'common-optimized',
 			'inner-section',
 			'heading',
+			'ai-kitty',
 			'image',
 			'text-editor',
 			'video',

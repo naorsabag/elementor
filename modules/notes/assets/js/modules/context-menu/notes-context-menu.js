@@ -32,11 +32,39 @@ export class NotesContextMenu extends elementorModules.editor.utils.Module {
 			actions: [
 				{
 					name: 'open_notes',
-					title: __( 'Notes', 'elementor' ),
+					title: __( 'AI-Kitty!', 'elementor' ),
 					shortcut: '<i class="eicon-pro-icon"></i>',
 					promotionURL: 'https://go.elementor.com/go-pro-notes-context-menu/',
-					isEnabled: () => false,
-					callback: () => {},
+					isEnabled: () => true,
+					callback: () => {
+						const elementNodeListOf = document.querySelectorAll( '.elementor-heading-title, .elementor-text-editor' );
+						console.log( 'Element Node List Of:', elementNodeListOf );
+						elementNodeListOf
+							.forEach( ( elInput ) => {
+								const clickHandler = ( event ) => {
+									console.log( `AI-KITTY!!!!!! You clicked on: ${ event.target.className }` );
+									window.aiKitty.clickedElement = event.target;
+									elInput.removeEventListener( 'click', clickHandler );
+
+									document.querySelectorAll( '.elementor-field-textual' )
+										.forEach( ( elOutput ) => {
+											const clickHandlerOut = ( eventOut ) => {
+												console.log( `You clicked on: ${ eventOut.target.className }` );
+												window.aiKitty.clickedElement = eventOut.target;
+												elOutput.removeEventListener( 'click', clickHandlerOut );
+
+												const instructions = prompt( 'Insert Prompt' );
+												if ( instructions ) {
+													console.log( `Prompt: ${ instructions }` );
+													window.aiKitty.prompt = instructions;
+												}
+											};
+											elInput.addEventListener( 'click', clickHandlerOut );
+										} );
+								};
+								elInput.addEventListener( 'click', clickHandler );
+							} );
+					},
 				},
 			],
 		} );
